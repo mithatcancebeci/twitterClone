@@ -1,5 +1,6 @@
 package com.company.twitterClone.Controllers;
 
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -10,8 +11,9 @@ import com.company.twitterClone.Models.Dtos.UserRegisterDto;
 import com.company.twitterClone.Services.Concrete.AuthManager;
 import javax.validation.Valid;
 
+@CrossOrigin()
 @RestController()
-@RequestMapping("/api/auth")
+@RequestMapping(value = "/api/auth")
 public class AuthController {
 
 	AuthManager authManager;

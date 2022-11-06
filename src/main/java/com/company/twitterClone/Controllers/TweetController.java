@@ -2,7 +2,6 @@ package com.company.twitterClone.Controllers;
 
 import javax.validation.Valid;
 
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -12,7 +11,6 @@ import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Models.Dtos.TweetCreateDto;
 import com.company.twitterClone.Models.Dtos.TweetDto;
-import com.company.twitterClone.Services.Concrete.AuthManager;
 import com.company.twitterClone.Services.Concrete.TweetManager;
 
 @RestController()

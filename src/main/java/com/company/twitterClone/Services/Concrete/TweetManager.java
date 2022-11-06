@@ -13,7 +13,6 @@ import com.company.twitterClone.Repository.TweetRepository;
 import com.company.twitterClone.Repository.UserRepository;
 import com.company.twitterClone.Services.Abstract.ITweetService;
 import com.company.twitterClone.Models.Concrete.Tweet;
-import com.company.twitterClone.Models.Concrete.User;
 
 @Service
 public class TweetManager implements ITweetService {

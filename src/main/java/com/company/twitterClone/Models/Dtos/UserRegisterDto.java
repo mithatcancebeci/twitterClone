@@ -1,7 +1,5 @@
 package com.company.twitterClone.Models.Dtos;
 
-import com.company.twitterClone.Models.Concrete.User;
-
 public class UserRegisterDto {
 	private String email;
 	private String password;
@@ -12,7 +10,7 @@ public class UserRegisterDto {
 	private String location;
 
 	public UserRegisterDto() {
-
+		
 	}
 
 	public String getEmail() {

@@ -19,11 +19,20 @@ public class TweetDto {
 	}
 
 	public TweetDto(Tweet tweet) {
+		this.setId(tweet.getId());
 		this.setContent(tweet.getContent());
 		this.setCreatedAt(tweet.getCreatedAt());
 		this.setUpdatedDate(tweet.getUpdatedAt());
 		this.setUser(new UserDto(tweet.getUser()));
 		//
+	}
+
+	public long getId() {
+		return id;
+	}
+
+	public void setId(long id) {
+		this.id = id;
 	}
 
 	public String getContent() {

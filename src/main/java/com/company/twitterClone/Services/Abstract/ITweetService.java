@@ -1,7 +1,6 @@
 package com.company.twitterClone.Services.Abstract;
 
 import com.company.twitterClone.Core.Utilities.Result.Result;
-import com.company.twitterClone.Models.Concrete.Tweet;
 import com.company.twitterClone.Models.Dtos.TweetCreateDto;
 import com.company.twitterClone.Models.Dtos.TweetDto;
 

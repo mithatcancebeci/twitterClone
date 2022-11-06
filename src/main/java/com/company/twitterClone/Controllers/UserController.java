@@ -15,4 +15,9 @@ public class UserController {
 	public Result findById(@Valid @RequestBody long id) {
 		return new Result(true);
 	}
+
+	@PostMapping("/getFollowers")
+	public Result getFollowers(@Valid @RequestBody long id) {
+		return new Result(true);
+	}
 }

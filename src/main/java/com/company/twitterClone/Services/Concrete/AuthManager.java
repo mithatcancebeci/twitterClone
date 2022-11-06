@@ -20,14 +20,19 @@ public class AuthManager implements IAuthService {
 
 	@Override
 	public Result login(UserLoginDto user) {
-		if (user == null) {
-			return new Result(false, "User credentials cannot be null");
+		try {
+			if (user == null) {
+				return new Result(false, "User credentials cannot be null");
+			}
+			boolean isUserInDB = checkEmailAndPassword(user);
+			if (!isUserInDB) {
+				return new Result(false, "Please check your credentials");
+			}
+			return new Result(true, "Login is success");
+		} catch (Exception ex) {
+			return new Result(false, ex.toString());
 		}
-		boolean isUserInDB = checkEmailAndPassword(user);
-		if (!isUserInDB) {
-			return new Result(false, "Please check your credentials");
-		}
-		return new Result(true, "Login is success");
+
 	}
 
 	@Override
