@@ -4,9 +4,10 @@ import java.util.List;
 
 import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
+import com.company.twitterClone.Models.Dtos.UserDto;
 import com.company.twitterClone.Services.Abstract.IUserService;
 
-public class UserManager<UserDto> implements IUserService<UserDto> {
+public class UserManager implements IUserService<UserDto> {
 
 	@Override
 	public DataResult<UserDto> findOne(long id) {

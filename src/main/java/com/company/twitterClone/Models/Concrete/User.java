@@ -11,25 +11,25 @@ public class User {
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@JsonProperty("id")
 	private long id;
-	
+
 	@JsonProperty("name")
 	private String name;
-	
+
 	@JsonProperty("surname")
 	private String surname;
-	
+
 	@JsonProperty("backgroundImage")
 	private String backgroundImage;
-	
+
 	@JsonProperty("location")
 	private String location;
-	
+
 	@JsonProperty("profileImage")
 	private String profileImage;
-	
+
 	@JsonProperty("birthDateYear")
 	private int birthDateYear;
-	
+
 	@JsonProperty("password")
 	private String password;
 

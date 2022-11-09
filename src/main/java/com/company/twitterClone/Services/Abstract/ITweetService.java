@@ -1,10 +1,9 @@
 package com.company.twitterClone.Services.Abstract;
 
 import com.company.twitterClone.Core.Utilities.Result.Result;
-import com.company.twitterClone.Models.Dtos.TweetCreateDto;
-import com.company.twitterClone.Models.Dtos.TweetDto;
+import com.company.twitterClone.Models.Concrete.Tweet;
 
-public interface ITweetService extends IService<TweetDto> {
+public interface ITweetService<TweetDto> extends IService<TweetDto> {
 	Result findAllComments();
 
 	Result findOneComment();
@@ -13,5 +12,5 @@ public interface ITweetService extends IService<TweetDto> {
 
 	Result findOneLike();
 
-	Result createTweet(TweetCreateDto tweetCreateDto);
+	Result createTweet(Tweet tweet);
 }

@@ -8,7 +8,7 @@ public class TweetDto {
 	private long id;
 	private String content;
 	private Date createdAt;
-	private Date updatedDate;
+	private Date updatedAt;
 	private UserDto user;
 	private List<CommentDto> comments;
 	private List<LikeDto> likes;
@@ -22,8 +22,11 @@ public class TweetDto {
 		this.setId(tweet.getId());
 		this.setContent(tweet.getContent());
 		this.setCreatedAt(tweet.getCreatedAt());
-		this.setUpdatedDate(tweet.getUpdatedAt());
+		this.setUpdatedAt(tweet.getUpdatedAt());
 		this.setUser(new UserDto(tweet.getUser()));
+		this.setComments(comments);
+		this.setLikes(likes);
+		this.setReTweets(reTweets);
 		//
 	}
 
@@ -51,12 +54,12 @@ public class TweetDto {
 		this.createdAt = createdAt;
 	}
 
-	public Date getUpdatedDate() {
-		return updatedDate;
+	public Date getUpdatedAt() {
+		return updatedAt;
 	}
 
-	public void setUpdatedDate(Date updatedDate) {
-		this.updatedDate = updatedDate;
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	public UserDto getUser() {
@@ -88,6 +91,7 @@ public class TweetDto {
 	}
 
 	public void setReTweets(List<ReTweetDto> reTweets) {
+
 		this.reTweets = reTweets;
 	}
 

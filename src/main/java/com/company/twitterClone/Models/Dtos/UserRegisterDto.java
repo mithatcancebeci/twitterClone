@@ -10,7 +10,7 @@ public class UserRegisterDto {
 	private String location;
 
 	public UserRegisterDto() {
-		
+
 	}
 
 	public String getEmail() {

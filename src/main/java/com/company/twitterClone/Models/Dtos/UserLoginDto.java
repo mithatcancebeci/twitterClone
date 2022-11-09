@@ -4,7 +4,7 @@ import com.company.twitterClone.Models.Concrete.User;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
 public class UserLoginDto {
-	
+
 	@JsonProperty("email")
 	private String email;
 

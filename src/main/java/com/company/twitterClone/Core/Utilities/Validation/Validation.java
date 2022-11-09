@@ -8,5 +8,5 @@ public class Validation {
 	public boolean phoneValidation(String phone) {
 		return false;
 	}
-	
+
 }
