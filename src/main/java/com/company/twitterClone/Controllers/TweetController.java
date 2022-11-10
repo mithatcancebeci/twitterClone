@@ -33,7 +33,7 @@ public class TweetController {
 	}
 
 	@PostMapping("/createComment")
-	public Result createComment(@Valid @RequestBody Comment comment) {
+	public Result createComment(@Valid @RequestBody Comment comment) throws Exception {
 		return commentManager.createComment(comment);
 	}
 

@@ -1,14 +1,16 @@
 package com.company.twitterClone.Core.Exception;
 
-public class UserNotFoundException extends Exception {
+public class NotFoundException extends RuntimeException{
+
 	/**
 	 * 
 	 */
-	private static final long serialVersionUID = 1881786746333543676L;
+	private static final long serialVersionUID = 7487987444072121291L;
+	
 	private String message;
-
-	public UserNotFoundException() {
-		this.message = "User not found";
+	
+	public NotFoundException(String message) {
+		this.message = message;
 	}
 
 	public String getMessage() {
@@ -18,5 +20,5 @@ public class UserNotFoundException extends Exception {
 	public void setMessage(String message) {
 		this.message = message;
 	}
-
+	
 }

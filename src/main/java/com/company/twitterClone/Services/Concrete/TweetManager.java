@@ -5,8 +5,7 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.company.twitterClone.Core.Exception.TweetNotFoundException;
-import com.company.twitterClone.Core.Exception.UserNotFoundException;
+import com.company.twitterClone.Core.Exception.NotFoundException;
 import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResultData;
@@ -35,19 +34,19 @@ public class TweetManager implements ITweetService<TweetDto> {
 	@Override
 	public DataResult<TweetDto> findOne(long id) throws Exception {
 		if (id <= 0) {
-			throw new TweetNotFoundException();
+			throw new NotFoundException("Tweet was not found");
 		}
 
 		var tweetInDB = tweetRepository.findById(id);
 
 		if (tweetInDB == null) {
-			throw new TweetNotFoundException();
+			throw new NotFoundException("Tweet was not found");
 		}
 
 		var user = tweetInDB.get().getUser();
 
 		if (user == null) {
-			throw new UserNotFoundException();
+			throw new NotFoundException("Tweet was not found");
 		}
 
 		var tweet = tweetInDB.get();
@@ -127,7 +126,7 @@ public class TweetManager implements ITweetService<TweetDto> {
 			var userInDB = userRepository.findUserByDisplayName(user.getDisplayName());
 
 			if (userInDB == null) {
-				throw new UserNotFoundException();
+				throw new NotFoundException("User was not found");
 			}
 
 			tweet.setCreatedAt(new java.util.Date());

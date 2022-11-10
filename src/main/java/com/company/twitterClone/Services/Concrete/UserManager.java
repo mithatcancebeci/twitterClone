@@ -40,13 +40,13 @@ public class UserManager implements IUserService<UserDto> {
 	}
 
 	@Override
-	public Result findAllTweets() {
+	public Result findAllTweets(long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Result findAllComments() {
+	public Result findAllComments(long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
