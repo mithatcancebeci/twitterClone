@@ -33,9 +33,9 @@ public class Tweet {
 	@JsonProperty("user")
 	private User user;
 
-	@OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL)
+	@OneToMany(targetEntity = Tweet.class, cascade = CascadeType.ALL)
 	@JsonProperty("comments")
-	private List<Comment> comments;
+	private List<Tweet> comments;
 
 	@OneToMany(targetEntity = Like.class, cascade = CascadeType.ALL)
 	@JsonProperty("likes")
@@ -50,7 +50,7 @@ public class Tweet {
 	}
 
 	public Tweet(String content, int likeCount, int reTweetCount, Date createdAt, Date updatedAt, User user,
-			List<Comment> comments, List<Like> likes, List<ReTweet> reTweets) {
+			List<Tweet> comments, List<Like> likes, List<ReTweet> reTweets) {
 		super();
 		this.content = content;
 		this.likeCount = likeCount;
@@ -115,11 +115,11 @@ public class Tweet {
 		this.user = user;
 	}
 
-	public List<Comment> getComments() {
+	public List<Tweet> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<Comment> comments) {
+	public void setComments(List<Tweet> comments) {
 		this.comments = comments;
 	}
 

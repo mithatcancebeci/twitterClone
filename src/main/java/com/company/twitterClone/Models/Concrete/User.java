@@ -45,9 +45,9 @@ public class User {
 	@JsonProperty("tweets")
 	private List<Tweet> tweets;
 
-	@OneToMany(targetEntity = Comment.class, cascade = CascadeType.ALL)
+	@OneToMany(targetEntity = Tweet.class, cascade = CascadeType.ALL)
 	@JsonProperty("comments")
-	private List<Comment> comments;
+	private List<Tweet> comments;
 
 	@OneToMany(targetEntity = Like.class, cascade = CascadeType.ALL)
 	@JsonProperty("likes")
@@ -63,7 +63,7 @@ public class User {
 
 	public User(String name, String surname, String backgroundImage, String location, String profileImage,
 			int birthDateYear, String password, String displayName, String email, List<Tweet> tweets,
-			List<Comment> comments, List<Like> likes, List<ReTweet> reTweets) {
+			List<Tweet> comments, List<Like> likes, List<ReTweet> reTweets) {
 		super();
 		this.name = name;
 		this.surname = surname;
@@ -168,11 +168,11 @@ public class User {
 		this.tweets = tweets;
 	}
 
-	public List<Comment> getComments() {
+	public List<Tweet> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<Comment> comments) {
+	public void setComments(List<Tweet> comments) {
 		this.comments = comments;
 	}
 

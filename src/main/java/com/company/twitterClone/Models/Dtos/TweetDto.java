@@ -7,10 +7,12 @@ import com.company.twitterClone.Models.Concrete.Tweet;
 public class TweetDto {
 	private long id;
 	private String content;
+	private int likeCount;
+	private int reTweetCount;
 	private Date createdAt;
 	private Date updatedAt;
 	private UserDto user;
-	private List<CommentDto> comments;
+	private List<TweetDto> comments;
 	private List<LikeDto> likes;
 	private List<ReTweetDto> reTweets;
 
@@ -24,6 +26,8 @@ public class TweetDto {
 		this.setCreatedAt(tweet.getCreatedAt());
 		this.setUpdatedAt(tweet.getUpdatedAt());
 		this.setUser(new UserDto(tweet.getUser()));
+		this.setLikeCount(tweet.getLikeCount());
+		this.setReTweetCount(tweet.getReTweetCount());
 		this.setComments(comments);
 		this.setLikes(likes);
 		this.setReTweets(reTweets);
@@ -36,6 +40,22 @@ public class TweetDto {
 
 	public void setId(long id) {
 		this.id = id;
+	}
+
+	public int getLikeCount() {
+		return likeCount;
+	}
+
+	public void setLikeCount(int likeCount) {
+		this.likeCount = likeCount;
+	}
+
+	public int getReTweetCount() {
+		return reTweetCount;
+	}
+
+	public void setReTweetCount(int reTweetCount) {
+		this.reTweetCount = reTweetCount;
 	}
 
 	public String getContent() {
@@ -70,11 +90,11 @@ public class TweetDto {
 		this.user = user;
 	}
 
-	public List<CommentDto> getComments() {
+	public List<TweetDto> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<CommentDto> comments) {
+	public void setComments(List<TweetDto> comments) {
 		this.comments = comments;
 	}
 

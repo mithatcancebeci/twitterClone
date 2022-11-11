@@ -1,19 +1,15 @@
 package com.company.twitterClone.Controllers;
 
 import javax.validation.Valid;
-
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-
 import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
-import com.company.twitterClone.Models.Concrete.Comment;
 import com.company.twitterClone.Models.Concrete.Tweet;
-import com.company.twitterClone.Models.Dtos.CommentDto;
 import com.company.twitterClone.Models.Dtos.TweetDto;
-import com.company.twitterClone.Services.Concrete.CommentManager;
+import com.company.twitterClone.Services.Concrete.LikeManager;
 import com.company.twitterClone.Services.Concrete.TweetManager;
 
 @RestController()
@@ -21,10 +17,11 @@ import com.company.twitterClone.Services.Concrete.TweetManager;
 public class TweetController {
 
 	TweetManager tweetManager;
-	CommentManager commentManager;
+	LikeManager likeManager;
 
-	public TweetController(TweetManager tweetManager) {
+	public TweetController(TweetManager tweetManager, LikeManager likeManager) {
 		this.tweetManager = tweetManager;
+		this.likeManager = likeManager;
 	}
 
 	@PostMapping("/")
@@ -32,23 +29,23 @@ public class TweetController {
 		return tweetManager.createTweet(tweet);
 	}
 
-	@PostMapping("/createComment")
-	public Result createComment(@Valid @RequestBody Comment comment) throws Exception {
-		return commentManager.createComment(comment);
-	}
-
 	@PostMapping("/findOneTweet")
 	public DataResult<TweetDto> findOneTweet(@Valid @RequestBody long id) throws Exception {
 		return tweetManager.findOne(id);
-	}
-
-	@PostMapping("/findOneComment")
-	public DataResult<CommentDto> findOneComment(@Valid @RequestBody long id) throws Exception {
-		return commentManager.findOne(id);
 	}
 
 	@PostMapping("/edit")
 	public DataResult<TweetDto> updateTweet(@Valid @RequestBody TweetDto tweetDto) {
 		return tweetManager.update(tweetDto.getUser().getId());
 	}
+
+	@PostMapping("/likeToPost")
+	public Result likeTweet(@Valid @RequestBody long tweetId, long userId) {
+		return likeManager.likeTweet(tweetId, userId);
+	}
+
+//	@PostMapping("/likeComment")
+//	public Result likeComment(@Valid @RequestBody long commentId, long userId) {
+//		return likeManager.likeComment(commentId, userId);
+//	}
 }

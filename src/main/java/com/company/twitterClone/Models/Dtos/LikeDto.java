@@ -6,7 +6,7 @@ public class LikeDto {
 	private long id;
 	private UserDto user;
 	private TweetDto tweet;
-	private CommentDto comment;
+	private TweetDto comment;
 
 	public LikeDto() {
 
@@ -16,7 +16,7 @@ public class LikeDto {
 		this.setId(like.getId());
 		this.setUser(new UserDto(like.getUser()));
 		this.setTweet(new TweetDto(like.getTweet()));
-		this.setComment(new CommentDto(like.getComment()));
+		this.setComment(new TweetDto(like.getComment()));
 	}
 
 	public long getId() {
@@ -43,11 +43,11 @@ public class LikeDto {
 		this.tweet = tweet;
 	}
 
-	public CommentDto getComment() {
+	public TweetDto getComment() {
 		return comment;
 	}
 
-	public void setComment(CommentDto comment) {
+	public void setComment(TweetDto comment) {
 		this.comment = comment;
 	}
 

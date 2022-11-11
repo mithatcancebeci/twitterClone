@@ -13,13 +13,13 @@ public class Like {
 	@ManyToOne
 	private Tweet tweet;
 	@ManyToOne
-	private Comment comment;
+	private Tweet comment;
 
 	public Like() {
 
 	}
 
-	public Like(User user, Tweet tweet, Comment comment) {
+	public Like(User user, Tweet tweet, Tweet comment) {
 		super();
 		this.user = user;
 		this.tweet = tweet;
@@ -50,11 +50,11 @@ public class Like {
 		this.tweet = tweet;
 	}
 
-	public Comment getComment() {
+	public Tweet getComment() {
 		return comment;
 	}
 
-	public void setComment(Comment comment) {
+	public void setComment(Tweet comment) {
 		this.comment = comment;
 	}
 

@@ -2,12 +2,21 @@ package com.company.twitterClone.Services.Concrete;
 
 import java.util.List;
 
+import org.springframework.stereotype.Service;
+
 import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Models.Dtos.UserDto;
+import com.company.twitterClone.Repository.UserRepository;
 import com.company.twitterClone.Services.Abstract.IUserService;
 
+@Service
 public class UserManager implements IUserService<UserDto> {
+	UserRepository userRepository;
+
+	public UserManager(UserRepository userRepository) {
+		this.userRepository = userRepository;
+	}
 
 	@Override
 	public DataResult<UserDto> findOne(long id) {

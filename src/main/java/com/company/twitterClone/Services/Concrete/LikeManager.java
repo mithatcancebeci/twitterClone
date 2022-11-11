@@ -1,10 +1,13 @@
 package com.company.twitterClone.Services.Concrete;
 
-import java.util.List;
-
 import org.springframework.stereotype.Service;
 
+import com.company.twitterClone.Core.BusinessRules.Abstract.IBusinessRules;
+import com.company.twitterClone.Core.BusinessRules.Concrete.TweetBusinessRules;
+import com.company.twitterClone.Core.BusinessRules.Concrete.UserBusinessRules;
+import com.company.twitterClone.Core.Utilities.Result.ErrorResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
+import com.company.twitterClone.Core.Utilities.Result.SuccessResult;
 import com.company.twitterClone.Models.Concrete.Like;
 import com.company.twitterClone.Repository.LikeRepository;
 import com.company.twitterClone.Repository.TweetRepository;
@@ -16,54 +19,101 @@ public class LikeManager implements ILikeService {
 	TweetRepository tweetRepository;
 	UserRepository userRepository;
 	LikeRepository likeRepository;
+	IBusinessRules businessRules;
+//	UserBusinessRules userBusinessRules;
+//	CommentBusinessRules commentBusinessRules;
 
 	public LikeManager(UserRepository userRepository, TweetRepository tweetRepository, LikeRepository likeRepository) {
 		this.userRepository = userRepository;
 		this.tweetRepository = tweetRepository;
 		this.likeRepository = likeRepository;
+
 	}
 
 	@Override
-	public Result like(long id, long currentUserId) {
+	public Result likeTweet(long tweetId, long userId) {
 		try {
-			if (id <= 0 || currentUserId <= 0) {
-				return new Result(false);
+			if (!businessRules.isValidId(tweetId) || !businessRules.isValidId(userId)) {
+				return new ErrorResult();
 			}
-			Like like = new Like();
-			var tweetInDB = tweetRepository.findById(id);
-			var userInDB = userRepository.findById(currentUserId);
-			var tweet = tweetInDB.get();
-			var user = userInDB.get();
+
+			var tweet = tweetRepository.findById(tweetId).get();
+			var user = userRepository.findById(userId).get();
 
 			if (tweet == null || user == null) {
-				return new Result(false);
+				return new ErrorResult();
 			}
-			
-			//Comment Eklenecek
-			
+
+			Like like = new Like();
+
 			int currentLikeCount = tweet.getLikeCount();
-			
-			var getLikesCurrentTweet = tweet.getLikes();
-			var getLikesCurrentUser = user.getLikes();
-			getLikesCurrentUser.add(like);
-			getLikesCurrentTweet.add(like);
-			
+			tweet.setLikeCount(currentLikeCount + 1);
+
 			like.setTweet(tweet);
 			like.setUser(user);
-			likeRepository.save(like);
-			
-			tweet.setLikeCount(currentLikeCount + 1);
-			tweet.setLikes(getLikesCurrentTweet);
-			tweetRepository.save(tweet);
-			
-			user.setLikes(getLikesCurrentUser);
-			userRepository.save(user);
-			
-		} catch (Exception ex) {
 
+			var getLikesCurrentTweet = tweet.getLikes();
+			var getLikesCurrentUser = user.getLikes();
+
+			getLikesCurrentUser.add(like);
+			getLikesCurrentTweet.add(like);
+
+			tweet.setLikes(getLikesCurrentTweet);
+			user.setLikes(getLikesCurrentUser);
+
+			likeRepository.save(like);
+			tweetRepository.save(tweet);
+			userRepository.save(user);
+
+			return new SuccessResult("Tweet liked");
+
+		} catch (Exception ex) {
+			return new ErrorResult(ex.toString());
 		}
-		return null;
+
 	}
+
+//	public Result likeComment(long commentId, long userId) {
+//		try {
+//			if (!businessRules.isValidId(commentId) || !businessRules.isValidId(userId)) {
+//				return new ErrorResult();
+//			}
+//
+//			var comment = commentRepository.findById(commentId).get();
+//			var user = userRepository.findById(userId).get();
+//
+//			if (comment == null || user == null) {
+//				return new ErrorResult();
+//			}
+//
+//			Like like = new Like();
+//
+//			int currentLikeCount = comment.getLikeCount();
+//			comment.setLikeCount(currentLikeCount + 1);
+//
+//			like.setComment(comment);
+//			like.setUser(user);
+//
+//			var getLikesCurrentTweet = comment.getLikes();
+//			var getLikesCurrentUser = user.getLikes();
+//
+//			getLikesCurrentUser.add(like);
+//			getLikesCurrentTweet.add(like);
+//
+//			comment.setLikes(getLikesCurrentTweet);
+//			user.setLikes(getLikesCurrentUser);
+//
+//			likeRepository.save(like);
+//			commentRepository.save(comment);
+//			userRepository.save(user);
+//
+//			return new SuccessResult("Comment liked");
+//
+//		} catch (Exception ex) {
+//			return new ErrorResult(ex.toString());
+//		}
+//
+//	}
 
 	@Override
 	public Result unLike(long id) {

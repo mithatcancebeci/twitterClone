@@ -9,7 +9,6 @@ import com.company.twitterClone.Core.Exception.NotFoundException;
 import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResultData;
-import com.company.twitterClone.Models.Dtos.CommentDto;
 import com.company.twitterClone.Models.Dtos.LikeDto;
 import com.company.twitterClone.Models.Dtos.ReTweetDto;
 import com.company.twitterClone.Models.Dtos.TweetDto;
@@ -147,11 +146,11 @@ public class TweetManager implements ITweetService<TweetDto> {
 
 	}
 
-	private List<CommentDto> convertComments(Tweet tweet) {
-		List<CommentDto> comments = new ArrayList<CommentDto>();
+	private List<TweetDto> convertComments(Tweet tweet) {
+		List<TweetDto> comments = new ArrayList<TweetDto>();
 		if (tweet.getComments() != null) {
 			for (int i = 0; i < tweet.getComments().size(); i++) {
-				comments.add(new CommentDto(tweet.getComments().get(i)));
+				comments.add(new TweetDto(tweet.getComments().get(i)));
 			}
 		}
 		return comments;

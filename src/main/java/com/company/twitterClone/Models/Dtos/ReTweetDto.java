@@ -9,7 +9,7 @@ public class ReTweetDto {
 
 	private TweetDto tweet;
 
-	private CommentDto comment;
+	private TweetDto comment;
 
 	public ReTweetDto() {
 
@@ -19,7 +19,7 @@ public class ReTweetDto {
 		this.setId(reTweet.getId());
 		this.setTweet(new TweetDto(reTweet.getTweet()));
 		this.setUser(new UserDto(reTweet.getUser()));
-		this.setComment(new CommentDto(reTweet.getComment()));
+		this.setComment(new TweetDto(reTweet.getComment()));
 	}
 
 	public long getId() {
@@ -46,11 +46,11 @@ public class ReTweetDto {
 		this.tweet = tweet;
 	}
 
-	public CommentDto getComment() {
+	public TweetDto getComment() {
 		return comment;
 	}
 
-	public void setComment(CommentDto comment) {
+	public void setComment(TweetDto comment) {
 		this.comment = comment;
 	}
 
