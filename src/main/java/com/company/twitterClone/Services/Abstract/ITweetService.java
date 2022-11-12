@@ -12,5 +12,7 @@ public interface ITweetService<TweetDto> extends IService<TweetDto> {
 
 	Result findOneLike();
 
-	Result createTweet(Tweet tweet);
+	Result createTweet(Tweet tweet, long userId) throws Exception;
+
+	Result createComment(Tweet comment, long userId, long tweetId);
 }

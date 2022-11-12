@@ -9,6 +9,7 @@ import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Models.Concrete.Tweet;
 import com.company.twitterClone.Models.Dtos.TweetDto;
+import com.company.twitterClone.Models.Dtos.UserDto;
 import com.company.twitterClone.Services.Concrete.LikeManager;
 import com.company.twitterClone.Services.Concrete.TweetManager;
 
@@ -25,8 +26,13 @@ public class TweetController {
 	}
 
 	@PostMapping("/")
-	public Result createTweet(@Valid @RequestBody Tweet tweet) {
-		return tweetManager.createTweet(tweet);
+	public Result createTweet(@Valid @RequestBody Tweet tweet, long userId) throws Exception {
+		return tweetManager.createTweet(tweet, userId);
+	}
+
+	@PostMapping("/createComment")
+	public Result createComment(@Valid @RequestBody Tweet comment, long userId, long tweetId) {
+		return tweetManager.createComment(comment, userId, tweetId);
 	}
 
 	@PostMapping("/findOneTweet")

@@ -3,6 +3,7 @@ package com.company.twitterClone.Services.Concrete;
 import org.springframework.stereotype.Service;
 
 import com.company.twitterClone.Core.BusinessRules.Abstract.IBusinessRules;
+import com.company.twitterClone.Core.BusinessRules.Concrete.BaseBusinessRules;
 import com.company.twitterClone.Core.BusinessRules.Concrete.TweetBusinessRules;
 import com.company.twitterClone.Core.BusinessRules.Concrete.UserBusinessRules;
 import com.company.twitterClone.Core.Utilities.Result.ErrorResult;
@@ -19,7 +20,7 @@ public class LikeManager implements ILikeService {
 	TweetRepository tweetRepository;
 	UserRepository userRepository;
 	LikeRepository likeRepository;
-	IBusinessRules businessRules;
+	BaseBusinessRules baseBusinessRules;
 //	UserBusinessRules userBusinessRules;
 //	CommentBusinessRules commentBusinessRules;
 
@@ -33,7 +34,7 @@ public class LikeManager implements ILikeService {
 	@Override
 	public Result likeTweet(long tweetId, long userId) {
 		try {
-			if (!businessRules.isValidId(tweetId) || !businessRules.isValidId(userId)) {
+			if (!baseBusinessRules.isValidId(tweetId) || !baseBusinessRules.isValidId(userId)) {
 				return new ErrorResult();
 			}
 

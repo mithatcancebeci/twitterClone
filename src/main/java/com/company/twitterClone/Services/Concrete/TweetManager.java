@@ -5,9 +5,13 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
+import com.company.twitterClone.Core.BusinessRules.Concrete.TweetBusinessRules;
+import com.company.twitterClone.Core.BusinessRules.Concrete.UserBusinessRules;
 import com.company.twitterClone.Core.Exception.NotFoundException;
 import com.company.twitterClone.Core.Utilities.Result.DataResult;
+import com.company.twitterClone.Core.Utilities.Result.ErrorResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
+import com.company.twitterClone.Core.Utilities.Result.SuccessResult;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResultData;
 import com.company.twitterClone.Models.Dtos.LikeDto;
 import com.company.twitterClone.Models.Dtos.ReTweetDto;
@@ -24,6 +28,8 @@ public class TweetManager implements ITweetService<TweetDto> {
 
 	TweetRepository tweetRepository;
 	UserRepository userRepository;
+	UserBusinessRules userBusinessRules;
+	TweetBusinessRules tweetBusinessRules;
 
 	public TweetManager(TweetRepository tweetRepository, UserRepository userRepository) {
 		this.tweetRepository = tweetRepository;
@@ -32,24 +38,16 @@ public class TweetManager implements ITweetService<TweetDto> {
 
 	@Override
 	public DataResult<TweetDto> findOne(long id) throws Exception {
-		if (id <= 0) {
+		if (!tweetBusinessRules.isValidId(id)) {
 			throw new NotFoundException("Tweet was not found");
 		}
 
-		var tweetInDB = tweetRepository.findById(id);
-
-		if (tweetInDB == null) {
-			throw new NotFoundException("Tweet was not found");
+		var tweet = tweetRepository.findById(id).get();
+		var user = tweet.getUser();
+		if (tweet == null || user == null) {
+			throw new NotFoundException("User or tweet not found");
 		}
-
-		var user = tweetInDB.get().getUser();
-
-		if (user == null) {
-			throw new NotFoundException("Tweet was not found");
-		}
-
-		var tweet = tweetInDB.get();
-
+		
 		TweetDto tweetDto = new TweetDto();
 
 		var convertedComments = this.convertComments(tweet);
@@ -66,6 +64,7 @@ public class TweetManager implements ITweetService<TweetDto> {
 		tweetDto.setUpdatedAt(tweet.getUpdatedAt());
 		tweetDto.setId(tweet.getId());
 		tweetDto.setUser(new UserDto(user));
+		
 		return new SuccessResultData<TweetDto>(tweetDto);
 	}
 
@@ -112,21 +111,62 @@ public class TweetManager implements ITweetService<TweetDto> {
 	}
 
 	@Override
-	public Result createTweet(Tweet tweet) {
+	public Result createComment(Tweet comment, long userId, long tweetId) {
 		try {
-			if (tweet == null) {
-				return new Result(false, "Tweet cannot be null");
+			if (!userBusinessRules.isValidId(userId) || !tweetBusinessRules.isValidId(tweetId)) {
+				return new ErrorResult();
 			}
 
-			if (tweet.getUser() == null) {
-				return new Result(false, "User is not logged in");
+			var tweet = tweetRepository.findById(tweetId).get();
+			var user = userRepository.findById(userId).get();
+
+			if (tweet == null || user == null) {
+				throw new NotFoundException("Tweet was not found");
 			}
-			User user = tweet.getUser();
-			var userInDB = userRepository.findUserByDisplayName(user.getDisplayName());
+
+			comment.setComments(null);
+			comment.setReTweets(null);
+			comment.setLikes(null);
+			comment.setLikeCount(0);
+			comment.setReTweetCount(0);
+			comment.setCreatedAt(new java.util.Date());
+			comment.setUpdatedAt(new java.util.Date());
+			comment.setUser(user);
+
+			tweetRepository.save(comment);
+
+			var commentListOfUser = user.getComments();
+			commentListOfUser.add(comment);
+			user.setComments(commentListOfUser);
+			userRepository.save(user);
+
+			var commentListOfTweet = tweet.getComments();
+			commentListOfTweet.add(comment);
+			tweet.setComments(commentListOfTweet);
+			tweetRepository.save(tweet);
+
+			return new SuccessResult("Comment created");
+
+		} catch (Exception ex) {
+			return new ErrorResult(ex.toString());
+		}
+
+	}
+
+	@Override
+	public Result createTweet(Tweet tweet, long userId) {
+		try {
+			if (tweet == null || tweet.getContent() == null) {
+				return new ErrorResult("Tweet cannot be null");
+			}
+
+			var userInDB = userRepository.findById(userId);
 
 			if (userInDB == null) {
 				throw new NotFoundException("User was not found");
 			}
+
+			var user = userInDB.get();
 
 			tweet.setCreatedAt(new java.util.Date());
 			tweet.setUpdatedAt(new java.util.Date());
@@ -136,12 +176,13 @@ public class TweetManager implements ITweetService<TweetDto> {
 			tweet.setReTweetCount(0);
 			tweet.setLikeCount(0);
 			tweet.setUser(user);
+
 			tweetRepository.save(tweet);
 
-			return new Result(true, "Tweet is created");
+			return new SuccessResult("Tweet is created");
 
 		} catch (Exception ex) {
-			return new Result(false, ex.toString());
+			return new ErrorResult(ex.toString());
 		}
 
 	}
