@@ -9,4 +9,11 @@ public class Validation {
 		return false;
 	}
 
+	public boolean checkEntityId(long id) {
+		if (id <= 0) {
+			return false;
+		}
+		return true;
+	}
+
 }

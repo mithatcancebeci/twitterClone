@@ -13,6 +13,7 @@ import com.company.twitterClone.Core.Utilities.Result.ErrorResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResult;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResultData;
+import com.company.twitterClone.Core.Utilities.Validation.Validation;
 import com.company.twitterClone.Models.Dtos.LikeDto;
 import com.company.twitterClone.Models.Dtos.ReTweetDto;
 import com.company.twitterClone.Models.Dtos.TweetDto;
@@ -28,8 +29,7 @@ public class TweetManager implements ITweetService<TweetDto> {
 
 	TweetRepository tweetRepository;
 	UserRepository userRepository;
-	UserBusinessRules userBusinessRules;
-	TweetBusinessRules tweetBusinessRules;
+	Validation validation;
 
 	public TweetManager(TweetRepository tweetRepository, UserRepository userRepository) {
 		this.tweetRepository = tweetRepository;
@@ -38,7 +38,7 @@ public class TweetManager implements ITweetService<TweetDto> {
 
 	@Override
 	public DataResult<TweetDto> findOne(long id) throws Exception {
-		if (!tweetBusinessRules.isValidId(id)) {
+		if (!validation.checkEntityId(id)) {
 			throw new NotFoundException("Tweet was not found");
 		}
 
@@ -47,7 +47,7 @@ public class TweetManager implements ITweetService<TweetDto> {
 		if (tweet == null || user == null) {
 			throw new NotFoundException("User or tweet not found");
 		}
-		
+
 		TweetDto tweetDto = new TweetDto();
 
 		var convertedComments = this.convertComments(tweet);
@@ -64,7 +64,7 @@ public class TweetManager implements ITweetService<TweetDto> {
 		tweetDto.setUpdatedAt(tweet.getUpdatedAt());
 		tweetDto.setId(tweet.getId());
 		tweetDto.setUser(new UserDto(user));
-		
+
 		return new SuccessResultData<TweetDto>(tweetDto);
 	}
 
@@ -113,7 +113,7 @@ public class TweetManager implements ITweetService<TweetDto> {
 	@Override
 	public Result createComment(Tweet comment, long userId, long tweetId) {
 		try {
-			if (!userBusinessRules.isValidId(userId) || !tweetBusinessRules.isValidId(tweetId)) {
+			if (!validation.checkEntityId(userId) || !validation.checkEntityId(tweetId)) {
 				return new ErrorResult();
 			}
 

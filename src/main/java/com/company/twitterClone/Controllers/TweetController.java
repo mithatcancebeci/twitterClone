@@ -9,7 +9,6 @@ import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Models.Concrete.Tweet;
 import com.company.twitterClone.Models.Dtos.TweetDto;
-import com.company.twitterClone.Models.Dtos.UserDto;
 import com.company.twitterClone.Services.Concrete.LikeManager;
 import com.company.twitterClone.Services.Concrete.TweetManager;
 
@@ -45,13 +44,13 @@ public class TweetController {
 		return tweetManager.update(tweetDto.getUser().getId());
 	}
 
-	@PostMapping("/likeToPost")
+	@PostMapping("/likeToTweet")
 	public Result likeTweet(@Valid @RequestBody long tweetId, long userId) {
 		return likeManager.likeTweet(tweetId, userId);
 	}
 
-//	@PostMapping("/likeComment")
-//	public Result likeComment(@Valid @RequestBody long commentId, long userId) {
-//		return likeManager.likeComment(commentId, userId);
-//	}
+	@PostMapping("/unlikeToTweet")
+	public Result unlikeTweet(@Valid @RequestBody long tweetId, long userId) {
+		return likeManager.unLikeTweet(tweetId, userId);
+	}
 }

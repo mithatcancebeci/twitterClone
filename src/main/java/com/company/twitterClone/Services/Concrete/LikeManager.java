@@ -2,13 +2,11 @@ package com.company.twitterClone.Services.Concrete;
 
 import org.springframework.stereotype.Service;
 
-import com.company.twitterClone.Core.BusinessRules.Abstract.IBusinessRules;
-import com.company.twitterClone.Core.BusinessRules.Concrete.BaseBusinessRules;
-import com.company.twitterClone.Core.BusinessRules.Concrete.TweetBusinessRules;
-import com.company.twitterClone.Core.BusinessRules.Concrete.UserBusinessRules;
+import com.company.twitterClone.Core.Exception.NotFoundException;
 import com.company.twitterClone.Core.Utilities.Result.ErrorResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResult;
+import com.company.twitterClone.Core.Utilities.Validation.Validation;
 import com.company.twitterClone.Models.Concrete.Like;
 import com.company.twitterClone.Repository.LikeRepository;
 import com.company.twitterClone.Repository.TweetRepository;
@@ -20,9 +18,7 @@ public class LikeManager implements ILikeService {
 	TweetRepository tweetRepository;
 	UserRepository userRepository;
 	LikeRepository likeRepository;
-	BaseBusinessRules baseBusinessRules;
-//	UserBusinessRules userBusinessRules;
-//	CommentBusinessRules commentBusinessRules;
+	Validation validation;
 
 	public LikeManager(UserRepository userRepository, TweetRepository tweetRepository, LikeRepository likeRepository) {
 		this.userRepository = userRepository;
@@ -34,15 +30,15 @@ public class LikeManager implements ILikeService {
 	@Override
 	public Result likeTweet(long tweetId, long userId) {
 		try {
-			if (!baseBusinessRules.isValidId(tweetId) || !baseBusinessRules.isValidId(userId)) {
-				return new ErrorResult();
+			if (!validation.checkEntityId(tweetId) || validation.checkEntityId(userId)) {
+				throw new NotFoundException("tweet was not found");
 			}
 
 			var tweet = tweetRepository.findById(tweetId).get();
 			var user = userRepository.findById(userId).get();
 
 			if (tweet == null || user == null) {
-				return new ErrorResult();
+				throw new NotFoundException("tweet was not found");
 			}
 
 			Like like = new Like();
@@ -74,52 +70,53 @@ public class LikeManager implements ILikeService {
 
 	}
 
-//	public Result likeComment(long commentId, long userId) {
-//		try {
-//			if (!businessRules.isValidId(commentId) || !businessRules.isValidId(userId)) {
-//				return new ErrorResult();
-//			}
-//
-//			var comment = commentRepository.findById(commentId).get();
-//			var user = userRepository.findById(userId).get();
-//
-//			if (comment == null || user == null) {
-//				return new ErrorResult();
-//			}
-//
-//			Like like = new Like();
-//
-//			int currentLikeCount = comment.getLikeCount();
-//			comment.setLikeCount(currentLikeCount + 1);
-//
-//			like.setComment(comment);
-//			like.setUser(user);
-//
-//			var getLikesCurrentTweet = comment.getLikes();
-//			var getLikesCurrentUser = user.getLikes();
-//
-//			getLikesCurrentUser.add(like);
-//			getLikesCurrentTweet.add(like);
-//
-//			comment.setLikes(getLikesCurrentTweet);
-//			user.setLikes(getLikesCurrentUser);
-//
-//			likeRepository.save(like);
-//			commentRepository.save(comment);
-//			userRepository.save(user);
-//
-//			return new SuccessResult("Comment liked");
-//
-//		} catch (Exception ex) {
-//			return new ErrorResult(ex.toString());
-//		}
-//
-//	}
-
 	@Override
-	public Result unLike(long id) {
-		// TODO Auto-generated method stub
-		return null;
+	public Result unLikeTweet(long tweetId, long userId) {
+		try {
+			if (!validation.checkEntityId(tweetId) || !validation.checkEntityId(userId)) {
+				throw new NotFoundException("tweet was not found");
+			}
+
+			var tweet = tweetRepository.findById(tweetId).get();
+			var user = userRepository.findById(userId).get();
+			if (tweet == null || user == null) {
+				throw new NotFoundException("tweet was not found");
+			}
+
+			var likeListForTweet = tweet.getLikes();
+			int currentLikeCount = tweet.getLikeCount();
+			tweet.setLikeCount(currentLikeCount - 1);
+
+			Like like = new Like();
+
+			for (int i = 0; i < likeListForTweet.size(); i++) {
+				boolean checkUser = likeListForTweet.get(i).getUser().getId() == user.getId();
+				boolean checkTweet = likeListForTweet.get(i).getTweet().getId() == tweet.getId();
+				if (checkTweet && checkUser) {
+					likeListForTweet.remove(i);
+					like = likeListForTweet.get(i);
+				}
+			}
+
+			tweetRepository.save(tweet);
+
+			var likeListForUser = user.getLikes();
+
+			for (int i = 0; i < likeListForUser.size(); i++) {
+				boolean checkUser = likeListForUser.get(i).getUser().getId() == user.getId();
+				if (checkUser) {
+					likeListForUser.remove(i);
+				}
+			}
+
+			userRepository.save(user);
+
+			likeRepository.delete(like);
+
+			return new SuccessResult("unlike success");
+		} catch (Exception ex) {
+			return new ErrorResult(ex.toString());
+		}
 	}
 
 	@Override

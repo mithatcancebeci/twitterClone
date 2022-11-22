@@ -7,7 +7,7 @@ public interface ILikeService {
 
 //	Result likeComment(long commentId, long userId);
 
-	Result unLike(long id);
+	Result unLikeTweet(long tweetId, long userId);
 
 	Result getAllLikesByUser(long id);
 
