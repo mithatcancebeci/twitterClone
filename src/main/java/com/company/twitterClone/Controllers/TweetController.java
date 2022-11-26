@@ -9,10 +9,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
-import com.company.twitterClone.Models.Concrete.Tweet;
+import com.company.twitterClone.Models.Dtos.CreateCommentDto;
+import com.company.twitterClone.Models.Dtos.CreateLikeDto;
 import com.company.twitterClone.Models.Dtos.CreateTweetDto;
 import com.company.twitterClone.Models.Dtos.TweetDto;
-import com.company.twitterClone.Services.Concrete.LikeManager;
 import com.company.twitterClone.Services.Concrete.TweetManager;
 
 @CrossOrigin()
@@ -21,11 +21,9 @@ import com.company.twitterClone.Services.Concrete.TweetManager;
 public class TweetController {
 
 	TweetManager tweetManager;
-	LikeManager likeManager;
-
-	public TweetController(TweetManager tweetManager, LikeManager likeManager) {
+	
+	public TweetController(TweetManager tweetManager) {
 		this.tweetManager = tweetManager;
-		this.likeManager = likeManager;
 	}
 
 	@PostMapping("/")
@@ -35,8 +33,8 @@ public class TweetController {
 	}
 
 	@PostMapping("/createComment")
-	public Result createComment(@Valid @RequestBody Tweet comment, long userId, long tweetId) {
-		return tweetManager.createComment(comment, userId, tweetId);
+	public Result createComment(@Valid @RequestBody CreateCommentDto commentInfo) {
+		return tweetManager.createComment(commentInfo);
 	}
 
 	@PostMapping("/findOneTweet")
@@ -49,13 +47,13 @@ public class TweetController {
 		return tweetManager.update(tweetDto.getUser().getId());
 	}
 
-	@PostMapping("/likeToTweet")
-	public Result likeTweet(@Valid @RequestBody long tweetId, long userId) {
-		return likeManager.likeTweet(tweetId, userId);
+	@PostMapping("/likeTweet")
+	public Result likeTweet(@Valid @RequestBody CreateLikeDto likeInfo) {
+		return tweetManager.likeTweet(likeInfo);
 	}
 
-	@PostMapping("/unlikeToTweet")
-	public Result unlikeTweet(@Valid @RequestBody long tweetId, long userId) {
-		return likeManager.unLikeTweet(tweetId, userId);
+	@PostMapping("/unlikeTweet")
+	public Result unlikeTweet(@Valid @RequestBody CreateLikeDto unlikeInfo) {
+		return tweetManager.unlikeTweet(unlikeInfo);
 	}
 }

@@ -11,14 +11,17 @@ import com.company.twitterClone.Core.Utilities.Result.SuccessResult;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResultData;
 import com.company.twitterClone.Core.Utilities.Validation.Validation;
 import com.company.twitterClone.Models.Dtos.CreateCommentDto;
+import com.company.twitterClone.Models.Dtos.CreateLikeDto;
 import com.company.twitterClone.Models.Dtos.CreateTweetDto;
 import com.company.twitterClone.Models.Dtos.LikeDto;
 import com.company.twitterClone.Models.Dtos.ReTweetDto;
 import com.company.twitterClone.Models.Dtos.TweetDto;
 import com.company.twitterClone.Models.Dtos.UserDto;
+import com.company.twitterClone.Repository.LikeRepository;
 import com.company.twitterClone.Repository.TweetRepository;
 import com.company.twitterClone.Repository.UserRepository;
 import com.company.twitterClone.Services.Abstract.ITweetService;
+import com.company.twitterClone.Models.Concrete.Like;
 import com.company.twitterClone.Models.Concrete.Tweet;
 
 @Service
@@ -27,10 +30,12 @@ public class TweetManager implements ITweetService<TweetDto> {
 	TweetRepository tweetRepository;
 	UserRepository userRepository;
 	Validation validation;
+	LikeRepository likeRepository;
 
-	public TweetManager(TweetRepository tweetRepository, UserRepository userRepository) {
+	public TweetManager(TweetRepository tweetRepository, UserRepository userRepository, LikeRepository likeRepository) {
 		this.tweetRepository = tweetRepository;
 		this.userRepository = userRepository;
+		this.likeRepository = likeRepository;
 	}
 
 	@Override
@@ -88,13 +93,100 @@ public class TweetManager implements ITweetService<TweetDto> {
 	}
 
 	@Override
-	public Result findAllComments() {
-		// TODO Auto-generated method stub
-		return null;
+	public Result likeTweet(CreateLikeDto likeInfo) {
+		try {
+			if (!validation.checkEntityId(likeInfo.getTweetId()) || validation.checkEntityId(likeInfo.getUserId())) {
+				throw new NotFoundException("tweet was not found");
+			}
+
+			var tweet = tweetRepository.findById(likeInfo.getTweetId()).get();
+			var user = userRepository.findById(likeInfo.getUserId()).get();
+
+			if (tweet == null || user == null) {
+				throw new NotFoundException("tweet was not found");
+			}
+
+			Like like = new Like();
+
+			int currentLikeCount = tweet.getLikeCount();
+			tweet.setLikeCount(currentLikeCount + 1);
+
+			like.setTweet(tweet);
+			like.setUser(user);
+
+			var getLikesCurrentTweet = tweet.getLikes();
+			var getLikesCurrentUser = user.getLikes();
+
+			getLikesCurrentUser.add(like);
+			getLikesCurrentTweet.add(like);
+
+			tweet.setLikes(getLikesCurrentTweet);
+			user.setLikes(getLikesCurrentUser);
+
+			likeRepository.save(like);
+			tweetRepository.save(tweet);
+			userRepository.save(user);
+
+			return new SuccessResult("Tweet liked");
+
+		} catch (Exception ex) {
+			return new ErrorResult(ex.toString());
+		}
+
 	}
 
 	@Override
-	public Result findOneComment() {
+	public Result unlikeTweet(CreateLikeDto unLikeInfo) {
+		try {
+			if (!validation.checkEntityId(unLikeInfo.getTweetId())
+					|| !validation.checkEntityId(unLikeInfo.getUserId())) {
+				throw new NotFoundException("tweet was not found");
+			}
+
+			var tweet = tweetRepository.findById(unLikeInfo.getTweetId()).get();
+			var user = userRepository.findById(unLikeInfo.getUserId()).get();
+			if (tweet == null || user == null) {
+				throw new NotFoundException("tweet was not found");
+			}
+
+			var likeListForTweet = tweet.getLikes();
+			int currentLikeCount = tweet.getLikeCount();
+			tweet.setLikeCount(currentLikeCount - 1);
+
+			Like like = new Like();
+
+			for (int i = 0; i < likeListForTweet.size(); i++) {
+				boolean checkUser = likeListForTweet.get(i).getUser().getId() == user.getId();
+				boolean checkTweet = likeListForTweet.get(i).getTweet().getId() == tweet.getId();
+				if (checkTweet && checkUser) {
+					likeListForTweet.remove(i);
+					like = likeListForTweet.get(i);
+				}
+			}
+
+			tweetRepository.save(tweet);
+
+			var likeListForUser = user.getLikes();
+
+			for (int i = 0; i < likeListForUser.size(); i++) {
+				boolean checkUser = likeListForUser.get(i).getUser().getId() == user.getId();
+				if (checkUser) {
+					likeListForUser.remove(i);
+				}
+			}
+
+			userRepository.save(user);
+
+			likeRepository.delete(like);
+
+			return new SuccessResult("unlike success");
+		} catch (Exception ex) {
+			return new ErrorResult(ex.toString());
+		}
+	}
+
+	@Override
+	public Result findAllComments() {
 		// TODO Auto-generated method stub
 		return null;
 	}
@@ -134,7 +226,7 @@ public class TweetManager implements ITweetService<TweetDto> {
 			comment.setCreatedAt(new java.util.Date());
 			comment.setUpdatedAt(new java.util.Date());
 			comment.setUser(user);
-			
+
 			tweetRepository.save(comment);
 
 			var commentListOfUser = user.getComments();
