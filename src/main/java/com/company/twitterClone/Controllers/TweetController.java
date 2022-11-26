@@ -1,6 +1,8 @@
 package com.company.twitterClone.Controllers;
 
+
 import javax.validation.Valid;
+import org.springframework.web.bind.annotation.CrossOrigin;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -8,12 +10,14 @@ import org.springframework.web.bind.annotation.RestController;
 import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Models.Concrete.Tweet;
+import com.company.twitterClone.Models.Dtos.CreateTweetDto;
 import com.company.twitterClone.Models.Dtos.TweetDto;
 import com.company.twitterClone.Services.Concrete.LikeManager;
 import com.company.twitterClone.Services.Concrete.TweetManager;
 
+@CrossOrigin()
 @RestController()
-@RequestMapping("/api/tweet")
+@RequestMapping(value = "/api/tweet")
 public class TweetController {
 
 	TweetManager tweetManager;
@@ -25,8 +29,9 @@ public class TweetController {
 	}
 
 	@PostMapping("/")
-	public Result createTweet(@Valid @RequestBody Tweet tweet, long userId) throws Exception {
-		return tweetManager.createTweet(tweet, userId);
+	public Result createTweet(@Valid @RequestBody CreateTweetDto tweetInfo) throws Exception {
+
+		return tweetManager.createTweet(tweetInfo);
 	}
 
 	@PostMapping("/createComment")

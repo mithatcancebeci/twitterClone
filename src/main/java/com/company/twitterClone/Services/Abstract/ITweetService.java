@@ -2,6 +2,7 @@ package com.company.twitterClone.Services.Abstract;
 
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Models.Concrete.Tweet;
+import com.company.twitterClone.Models.Dtos.CreateTweetDto;
 
 public interface ITweetService<TweetDto> extends IService<TweetDto> {
 	Result findAllComments();
@@ -12,7 +13,7 @@ public interface ITweetService<TweetDto> extends IService<TweetDto> {
 
 	Result findOneLike();
 
-	Result createTweet(Tweet tweet, long userId) throws Exception;
+	Result createTweet(CreateTweetDto tweetInfo) throws Exception;
 
 	Result createComment(Tweet comment, long userId, long tweetId);
 }
