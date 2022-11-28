@@ -3,7 +3,7 @@ package com.company.twitterClone.Core.Utilities.Validation.Concrete;
 import com.company.twitterClone.Core.Exception.NotFoundException;
 import com.company.twitterClone.Core.Utilities.Validation.Abstract.IValidator;
 import com.company.twitterClone.Models.Concrete.Tweet;
-import com.company.twitterClone.Repository.TweetRepository;
+import com.company.twitterClone.Repositories.TweetRepository;
 
 public class TweetValidation implements IValidator<Tweet> {
 

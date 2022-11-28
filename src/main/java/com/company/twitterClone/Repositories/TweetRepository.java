@@ -1,4 +1,4 @@
-package com.company.twitterClone.Repository;
+package com.company.twitterClone.Repositories;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 

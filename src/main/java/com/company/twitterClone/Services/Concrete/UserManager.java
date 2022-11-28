@@ -10,7 +10,7 @@ import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResultData;
 import com.company.twitterClone.Core.Utilities.Validation.Concrete.UserValidation;
 import com.company.twitterClone.Models.Response.UserResponse;
-import com.company.twitterClone.Repository.UserRepository;
+import com.company.twitterClone.Repositories.UserRepository;
 import com.company.twitterClone.Services.Abstract.IUserService;
 
 @Service

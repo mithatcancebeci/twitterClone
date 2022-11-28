@@ -22,9 +22,9 @@ import com.company.twitterClone.Models.Response.LikeResponse;
 import com.company.twitterClone.Models.Response.ReTweetResponse;
 import com.company.twitterClone.Models.Response.TweetResponse;
 import com.company.twitterClone.Models.Response.UserResponse;
-import com.company.twitterClone.Repository.LikeRepository;
-import com.company.twitterClone.Repository.TweetRepository;
-import com.company.twitterClone.Repository.UserRepository;
+import com.company.twitterClone.Repositories.LikeRepository;
+import com.company.twitterClone.Repositories.TweetRepository;
+import com.company.twitterClone.Repositories.UserRepository;
 import com.company.twitterClone.Services.Abstract.ITweetService;
 
 @Service

@@ -6,7 +6,7 @@ import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Models.Concrete.User;
 import com.company.twitterClone.Models.Request.UserLoginRequest;
 import com.company.twitterClone.Models.Request.UserRegisterRequest;
-import com.company.twitterClone.Repository.UserRepository;
+import com.company.twitterClone.Repositories.UserRepository;
 import com.company.twitterClone.Services.Abstract.IAuthService;
 
 @Service
