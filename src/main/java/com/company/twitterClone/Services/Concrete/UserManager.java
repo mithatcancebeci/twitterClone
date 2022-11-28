@@ -5,7 +5,7 @@ import java.util.List;
 import org.springframework.stereotype.Service;
 
 import com.company.twitterClone.Core.Utilities.Result.DataResult;
-import com.company.twitterClone.Core.Utilities.Result.ErrorDataResult;
+import com.company.twitterClone.Core.Utilities.Result.ErrorResultData;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResultData;
 import com.company.twitterClone.Core.Utilities.Validation.Concrete.UserValidation;
@@ -39,7 +39,7 @@ public class UserManager implements IUserService<UserResponse> {
 
 		} catch (Exception ex) {
 			System.out.println(ex.toString());
-			return new ErrorDataResult<>();
+			return new ErrorResultData<>();
 		}
 
 	}

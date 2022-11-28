@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 import com.company.twitterClone.Core.Exception.NotFoundException;
 import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.ErrorResult;
+import com.company.twitterClone.Core.Utilities.Result.ErrorResultData;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResult;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResultData;
@@ -71,9 +72,9 @@ public class TweetManager implements ITweetService<TweetResponse> {
 			tweetResponse.setId(tweet.getId());
 			tweetResponse.setUser(new UserResponse(user));
 
-			return new SuccessResultData<>(tweetResponse);
+			return new SuccessResultData<TweetResponse>(tweetResponse);
 		} catch (Exception e) {
-			throw new Exception(e.toString());
+			return new ErrorResultData<TweetResponse>(e.toString());
 		}
 
 	}
