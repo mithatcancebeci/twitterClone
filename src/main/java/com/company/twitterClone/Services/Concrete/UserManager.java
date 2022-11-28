@@ -35,11 +35,10 @@ public class UserManager implements IUserService<UserResponse> {
 			userResponse.setUsername(user.getUsername());
 			userResponse.setProfileImage(user.getProfileImage());
 
-			return new SuccessResultData<>(userResponse);
+			return new SuccessResultData<UserResponse>(userResponse);
 
 		} catch (Exception ex) {
-			System.out.println(ex.toString());
-			return new ErrorResultData<>();
+			return new ErrorResultData<UserResponse>(ex.toString());
 		}
 
 	}
