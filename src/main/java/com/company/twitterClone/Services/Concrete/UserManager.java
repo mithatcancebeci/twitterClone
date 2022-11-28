@@ -4,90 +4,68 @@ import java.util.List;
 
 import org.springframework.stereotype.Service;
 
-import com.company.twitterClone.Core.Exception.NotFoundException;
 import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.ErrorDataResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResultData;
-import com.company.twitterClone.Core.Utilities.Validation.Validation;
-import com.company.twitterClone.Models.Dtos.LikeDto;
-import com.company.twitterClone.Models.Dtos.UserDto;
+import com.company.twitterClone.Core.Utilities.Validation.Concrete.UserValidation;
+import com.company.twitterClone.Models.Response.UserResponse;
 import com.company.twitterClone.Repository.UserRepository;
 import com.company.twitterClone.Services.Abstract.IUserService;
-import java.util.List;
 
 @Service
-public class UserManager implements IUserService<UserDto> {
-	UserRepository userRepository;
-	Validation validation;
+public class UserManager implements IUserService<UserResponse> {
+	private UserRepository userRepository;
+	private UserValidation userValidation;
 
 	public UserManager(UserRepository userRepository) {
 		this.userRepository = userRepository;
+
 	}
 
 	@Override
-	public DataResult<UserDto> findOne(long id) {
+	public DataResult<UserResponse> findOne(Long id) {
 		try {
-			if (!validation.checkEntityId(id)) {
-				throw new NotFoundException("user was not found");
-			}
+			var user = userValidation.validationRequest(id);
 
-			var userInDb = userRepository.findById(id);
+			UserResponse userResponse = new UserResponse();
 
-			if (userInDb == null) {
-				throw new NotFoundException("user was not found");
-			}
+			userResponse.setDisplayName(user.getDisplayName());
+			userResponse.setId(user.getId());
+			userResponse.setUsername(user.getUsername());
+			userResponse.setProfileImage(user.getProfileImage());
 
-			var user = userInDb.get();
-
-			UserDto userDto = new UserDto();
-
-			userDto.setDisplayName(user.getDisplayName());
-			userDto.setId(user.getId());
-			userDto.setName(user.getName());
-			userDto.setProfileImage(user.getProfileImage());
-
-			return new SuccessResultData<UserDto>(userDto);
+			return new SuccessResultData<>(userResponse);
 
 		} catch (Exception ex) {
 			System.out.println(ex.toString());
-			return new ErrorDataResult<UserDto>();
+			return new ErrorDataResult<>();
 		}
 
 	}
 
 	@Override
-	public DataResult<List<UserDto>> findAll() {
+	public DataResult<List<UserResponse>> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public DataResult<UserDto> update(long id) {
+	public DataResult<UserResponse> update(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public DataResult<UserDto> delete(long id) {
+	public DataResult<UserResponse> delete(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Result findAllLikes(long id) {
+	public Result findAllLikes(Long id) {
 		try {
-			if (!validation.checkEntityId(id)) {
-				throw new NotFoundException("user was not found");
-			}
-
-			var userInDb = userRepository.findById(id);
-
-			if (userInDb == null) {
-				throw new NotFoundException("user was not found");
-			}
-
-			var user = userInDb.get();
+			var user = userValidation.validationRequest(id);
 			return null;
 		} catch (Exception ext) {
 			return null;
@@ -95,13 +73,13 @@ public class UserManager implements IUserService<UserDto> {
 	}
 
 	@Override
-	public Result findAllTweets(long id) {
+	public Result findAllTweets(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Result findAllComments(long id) {
+	public Result findAllComments(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}

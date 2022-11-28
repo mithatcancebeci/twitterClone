@@ -3,7 +3,7 @@ package com.company.twitterClone.Core.Exception;
 public class NotFoundException extends RuntimeException {
 
 	/**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 7487987444072121291L;
 
@@ -13,6 +13,7 @@ public class NotFoundException extends RuntimeException {
 		this.message = message;
 	}
 
+	@Override
 	public String getMessage() {
 		return message;
 	}

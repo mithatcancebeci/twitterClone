@@ -2,35 +2,39 @@ package com.company.twitterClone.Services.Concrete;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.springframework.stereotype.Service;
+
 import com.company.twitterClone.Core.Exception.NotFoundException;
 import com.company.twitterClone.Core.Utilities.Result.DataResult;
 import com.company.twitterClone.Core.Utilities.Result.ErrorResult;
 import com.company.twitterClone.Core.Utilities.Result.Result;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResult;
 import com.company.twitterClone.Core.Utilities.Result.SuccessResultData;
-import com.company.twitterClone.Core.Utilities.Validation.Validation;
-import com.company.twitterClone.Models.Dtos.CreateCommentDto;
-import com.company.twitterClone.Models.Dtos.CreateLikeDto;
-import com.company.twitterClone.Models.Dtos.CreateTweetDto;
-import com.company.twitterClone.Models.Dtos.LikeDto;
-import com.company.twitterClone.Models.Dtos.ReTweetDto;
-import com.company.twitterClone.Models.Dtos.TweetDto;
-import com.company.twitterClone.Models.Dtos.UserDto;
+import com.company.twitterClone.Core.Utilities.Validation.Concrete.TweetValidation;
+import com.company.twitterClone.Core.Utilities.Validation.Concrete.UserValidation;
+import com.company.twitterClone.Models.Concrete.Like;
+import com.company.twitterClone.Models.Concrete.Tweet;
+import com.company.twitterClone.Models.Request.CreateCommentRequest;
+import com.company.twitterClone.Models.Request.CreateLikeRequest;
+import com.company.twitterClone.Models.Request.CreateTweetRequest;
+import com.company.twitterClone.Models.Response.LikeResponse;
+import com.company.twitterClone.Models.Response.ReTweetResponse;
+import com.company.twitterClone.Models.Response.TweetResponse;
+import com.company.twitterClone.Models.Response.UserResponse;
 import com.company.twitterClone.Repository.LikeRepository;
 import com.company.twitterClone.Repository.TweetRepository;
 import com.company.twitterClone.Repository.UserRepository;
 import com.company.twitterClone.Services.Abstract.ITweetService;
-import com.company.twitterClone.Models.Concrete.Like;
-import com.company.twitterClone.Models.Concrete.Tweet;
 
 @Service
-public class TweetManager implements ITweetService<TweetDto> {
+public class TweetManager implements ITweetService<TweetResponse> {
 
-	TweetRepository tweetRepository;
-	UserRepository userRepository;
-	Validation validation;
-	LikeRepository likeRepository;
+	private TweetRepository tweetRepository;
+	private UserRepository userRepository;
+	private TweetValidation tweetValidation;
+	private UserValidation userValidation;
+	private LikeRepository likeRepository;
 
 	public TweetManager(TweetRepository tweetRepository, UserRepository userRepository, LikeRepository likeRepository) {
 		this.tweetRepository = tweetRepository;
@@ -39,35 +43,35 @@ public class TweetManager implements ITweetService<TweetDto> {
 	}
 
 	@Override
-	public DataResult<TweetDto> findOne(long id) throws Exception {
+	public DataResult<TweetResponse> findOne(Long tweetId) throws Exception {
 		try {
-			if (!validation.checkEntityId(id)) {
-				throw new NotFoundException("Tweet was not found");
-			}
 
-			var tweet = tweetRepository.findById(id).get();
+			var tweet = tweetValidation.validationRequest(tweetId);
+
 			var user = tweet.getUser();
-			if (tweet == null || user == null) {
-				throw new NotFoundException("User or tweet not found");
+
+			if (user == null) {
+				throw new NotFoundException("user was not found");
 			}
 
-			TweetDto tweetDto = new TweetDto();
+			TweetResponse tweetResponse = new TweetResponse();
 
 			var convertedComments = this.convertComments(tweet);
-			tweetDto.setComments(convertedComments);
+			tweetResponse.setComments(convertedComments);
 
 			var convertedLikes = this.convertLikes(tweet);
-			tweetDto.setLikes(convertedLikes);
+			tweetResponse.setLikes(convertedLikes);
 
 			var convertedReTweets = this.convertReTweets(tweet);
-			tweetDto.setReTweets(convertedReTweets);
+			tweetResponse.setReTweets(convertedReTweets);
 
-			tweetDto.setContent(tweet.getContent());
-			tweetDto.setCreatedAt(tweet.getCreatedAt());
-			tweetDto.setUpdatedAt(tweet.getUpdatedAt());
-			tweetDto.setId(tweet.getId());
-			tweetDto.setUser(new UserDto(user));
-			return new SuccessResultData<TweetDto>(tweetDto);
+			tweetResponse.setContent(tweet.getContent());
+			tweetResponse.setCreatedAt(tweet.getCreatedAt());
+			tweetResponse.setUpdatedAt(tweet.getUpdatedAt());
+			tweetResponse.setId(tweet.getId());
+			tweetResponse.setUser(new UserResponse(user));
+
+			return new SuccessResultData<>(tweetResponse);
 		} catch (Exception e) {
 			throw new Exception(e.toString());
 		}
@@ -75,36 +79,28 @@ public class TweetManager implements ITweetService<TweetDto> {
 	}
 
 	@Override
-	public DataResult<List<TweetDto>> findAll() {
+	public DataResult<List<TweetResponse>> findAll() {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public DataResult<TweetDto> update(long id) {
+	public DataResult<TweetResponse> update(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public DataResult<TweetDto> delete(long id) {
+	public DataResult<TweetResponse> delete(Long id) {
 		// TODO Auto-generated method stub
 		return null;
 	}
 
 	@Override
-	public Result likeTweet(CreateLikeDto likeInfo) {
+	public Result likeTweet(CreateLikeRequest likeInfo) {
 		try {
-			if (!validation.checkEntityId(likeInfo.getTweetId()) || validation.checkEntityId(likeInfo.getUserId())) {
-				throw new NotFoundException("tweet was not found");
-			}
-
-			var tweet = tweetRepository.findById(likeInfo.getTweetId()).get();
-			var user = userRepository.findById(likeInfo.getUserId()).get();
-
-			if (tweet == null || user == null) {
-				throw new NotFoundException("tweet was not found");
-			}
+			var tweet = tweetValidation.validationRequest(likeInfo.getTweetId());
+			var user = userValidation.validationRequest(likeInfo.getUserId());
 
 			Like like = new Like();
 
@@ -136,21 +132,15 @@ public class TweetManager implements ITweetService<TweetDto> {
 	}
 
 	@Override
-	public Result unlikeTweet(CreateLikeDto unLikeInfo) {
+	public Result unlikeTweet(CreateLikeRequest unLikeInfo) {
 		try {
-			if (!validation.checkEntityId(unLikeInfo.getTweetId())
-					|| !validation.checkEntityId(unLikeInfo.getUserId())) {
-				throw new NotFoundException("tweet was not found");
-			}
 
-			var tweet = tweetRepository.findById(unLikeInfo.getTweetId()).get();
-			var user = userRepository.findById(unLikeInfo.getUserId()).get();
-			if (tweet == null || user == null) {
-				throw new NotFoundException("tweet was not found");
-			}
+			var tweet = tweetValidation.validationRequest(unLikeInfo.getTweetId());
+			var user = userValidation.validationRequest(unLikeInfo.getUserId());
 
 			var likeListForTweet = tweet.getLikes();
 			int currentLikeCount = tweet.getLikeCount();
+
 			tweet.setLikeCount(currentLikeCount - 1);
 
 			Like like = new Like();
@@ -204,19 +194,11 @@ public class TweetManager implements ITweetService<TweetDto> {
 	}
 
 	@Override
-	public Result createComment(CreateCommentDto commentInfo) {
+	public Result createComment(CreateCommentRequest commentInfo) {
 		try {
-			if (!validation.checkEntityId(commentInfo.getUserId())
-					|| !validation.checkEntityId(commentInfo.getTweetId())) {
-				return new ErrorResult();
-			}
+			var tweet = tweetValidation.validationRequest(commentInfo.getTweetId());
+			var user = userValidation.validationRequest(commentInfo.getUserId());
 
-			var tweet = tweetRepository.findById(commentInfo.getTweetId()).get();
-			var user = userRepository.findById(commentInfo.getUserId()).get();
-
-			if (tweet == null || user == null) {
-				throw new NotFoundException("Tweet was not found");
-			}
 			Tweet comment = new Tweet();
 			comment.setComments(null);
 			comment.setReTweets(null);
@@ -232,11 +214,13 @@ public class TweetManager implements ITweetService<TweetDto> {
 			var commentListOfUser = user.getComments();
 			commentListOfUser.add(comment);
 			user.setComments(commentListOfUser);
+
 			userRepository.save(user);
 
 			var commentListOfTweet = tweet.getComments();
 			commentListOfTweet.add(comment);
 			tweet.setComments(commentListOfTweet);
+
 			tweetRepository.save(tweet);
 
 			return new SuccessResult("Comment created");
@@ -248,23 +232,16 @@ public class TweetManager implements ITweetService<TweetDto> {
 	}
 
 	@Override
-	public Result createTweet(CreateTweetDto tweetInfo) {
+	public Result createTweet(CreateTweetRequest tweetInfo) {
 		try {
-			if (!validation.checkEntityId(tweetInfo.getUserId())) {
-				throw new NotFoundException("user not found");
-			}
 			if (tweetInfo.getContent() == null) {
 				return new ErrorResult("Tweet cannot be null");
 			}
 
-			var userInDB = userRepository.findById(tweetInfo.getUserId());
+			var user = userValidation.validationRequest(tweetInfo.getUserId());
 
-			if (userInDB == null) {
-				throw new NotFoundException("User was not found");
-			}
-
-			var user = userInDB.get();
 			Tweet tweet = new Tweet();
+
 			tweet.setCreatedAt(new java.util.Date());
 			tweet.setUpdatedAt(new java.util.Date());
 			tweet.setComments(null);
@@ -285,33 +262,33 @@ public class TweetManager implements ITweetService<TweetDto> {
 
 	}
 
-	private List<TweetDto> convertComments(Tweet tweet) {
-		List<TweetDto> comments = new ArrayList<TweetDto>();
+	private List<TweetResponse> convertComments(Tweet tweet) {
+		List<TweetResponse> comments = new ArrayList<>();
 		if (tweet.getComments() != null) {
 			for (int i = 0; i < tweet.getComments().size(); i++) {
-				comments.add(new TweetDto(tweet.getComments().get(i)));
+				comments.add(new TweetResponse(tweet.getComments().get(i)));
 			}
 		}
 		return comments;
 
 	}
 
-	private List<LikeDto> convertLikes(Tweet tweet) {
-		List<LikeDto> likes = new ArrayList<LikeDto>();
+	private List<LikeResponse> convertLikes(Tweet tweet) {
+		List<LikeResponse> likes = new ArrayList<>();
 		if (tweet.getLikes() != null) {
 			for (int i = 0; i < tweet.getLikes().size(); i++) {
-				likes.add(new LikeDto(tweet.getLikes().get(i)));
+				likes.add(new LikeResponse(tweet.getLikes().get(i)));
 			}
 		}
 		return likes;
 
 	}
 
-	private List<ReTweetDto> convertReTweets(Tweet tweet) {
-		List<ReTweetDto> reTweets = new ArrayList<ReTweetDto>();
+	private List<ReTweetResponse> convertReTweets(Tweet tweet) {
+		List<ReTweetResponse> reTweets = new ArrayList<>();
 		if (tweet.getReTweets() != null) {
 			for (int i = 0; i < tweet.getReTweets().size(); i++) {
-				reTweets.add(new ReTweetDto(tweet.getReTweets().get(i)));
+				reTweets.add(new ReTweetResponse(tweet.getReTweets().get(i)));
 			}
 		}
 		return reTweets;

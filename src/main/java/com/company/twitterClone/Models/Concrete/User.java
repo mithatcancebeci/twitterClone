@@ -1,83 +1,94 @@
 package com.company.twitterClone.Models.Concrete;
 
+import java.util.Date;
 import java.util.List;
-import javax.persistence.*;
-import com.fasterxml.jackson.annotation.JsonProperty;
+
+import javax.persistence.CascadeType;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.OneToMany;
 
 @Entity
 public class User {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@JsonProperty("id")
 	private long id;
 
-	@JsonProperty("name")
-	private String name;
+	@Column(unique = true)
+	private String username;
 
-	@JsonProperty("surname")
-	private String surname;
-
-	@JsonProperty("backgroundImage")
 	private String backgroundImage;
 
-	@JsonProperty("location")
 	private String location;
 
-	@JsonProperty("profileImage")
 	private String profileImage;
 
-	@JsonProperty("birthDateYear")
 	private int birthDateYear;
 
-	@JsonProperty("password")
 	private String password;
 
-	@Column(unique = true)
-	@JsonProperty("displayName")
 	private String displayName;
 
+	private Date createdAt;
+
+	private Date updatedAt;
+
 	@Column(unique = true)
-	@JsonProperty("email")
 	private String email;
 
 	@OneToMany(targetEntity = Tweet.class, cascade = CascadeType.ALL)
-	@JsonProperty("tweets")
 	private List<Tweet> tweets;
 
 	@OneToMany(targetEntity = Tweet.class, cascade = CascadeType.ALL)
-	@JsonProperty("comments")
 	private List<Tweet> comments;
 
 	@OneToMany(targetEntity = Like.class, cascade = CascadeType.ALL)
-	@JsonProperty("likes")
 	private List<Like> likes;
 
 	@OneToMany(targetEntity = ReTweet.class, cascade = CascadeType.ALL)
-	@JsonProperty("reTweets")
 	private List<ReTweet> reTweets;
 
 	public User() {
-
 	}
 
-	public User(String name, String surname, String backgroundImage, String location, String profileImage,
-			int birthDateYear, String password, String displayName, String email, List<Tweet> tweets,
+	public User(String username, String backgroundImage, String location, String profileImage, int birthDateYear,
+			String password, String displayName, Date createdAt, Date updatedAt, String email, List<Tweet> tweets,
 			List<Tweet> comments, List<Like> likes, List<ReTweet> reTweets) {
 		super();
-		this.name = name;
-		this.surname = surname;
+		this.username = username;
 		this.backgroundImage = backgroundImage;
 		this.location = location;
 		this.profileImage = profileImage;
 		this.birthDateYear = birthDateYear;
 		this.password = password;
 		this.displayName = displayName;
+		this.createdAt = createdAt;
+		this.updatedAt = updatedAt;
 		this.email = email;
 		this.tweets = tweets;
 		this.comments = comments;
 		this.likes = likes;
 		this.reTweets = reTweets;
+	}
+
+	public Date getCreatedAt() {
+		return createdAt;
+	}
+
+	public void setCreatedAt(Date createdAt) {
+		this.createdAt = createdAt;
+	}
+
+	public Date getUpdatedAt() {
+		return updatedAt;
+	}
+
+	public void setUpdatedAt(Date updatedAt) {
+		this.updatedAt = updatedAt;
 	}
 
 	public long getId() {
@@ -88,20 +99,12 @@ public class User {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getSurname() {
-		return surname;
-	}
-
-	public void setSurname(String surname) {
-		this.surname = surname;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getBackgroundImage() {

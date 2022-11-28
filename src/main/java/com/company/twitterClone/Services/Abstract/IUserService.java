@@ -2,10 +2,10 @@ package com.company.twitterClone.Services.Abstract;
 
 import com.company.twitterClone.Core.Utilities.Result.Result;
 
-public interface IUserService<UserDto> extends IService<UserDto> {
-	Result findAllLikes(long id);
+public interface IUserService<UserReponse> extends IService<UserReponse> {
+	Result findAllLikes(Long id);
 
-	Result findAllTweets(long id);
+	Result findAllTweets(Long id);
 
-	Result findAllComments(long id);
+	Result findAllComments(Long id);
 }

@@ -1,24 +1,24 @@
-package com.company.twitterClone.Models.Dtos;
+package com.company.twitterClone.Models.Response;
 
 import com.company.twitterClone.Models.Concrete.User;
 
-public class UserDto {
+public class UserResponse {
 
 	private long id;
 
-	private String name;
+	private String username;
 
 	private String displayName;
 
 	private String profileImage;
 
-	public UserDto() {
+	public UserResponse() {
 
 	}
 
-	public UserDto(User user) {
+	public UserResponse(User user) {
 		this.setId(user.getId());
-		this.setName(user.getName());
+		this.setUsername(user.getUsername());
 		this.setDisplayName(user.getDisplayName());
 		this.setProfileImage(user.getProfileImage());
 	}
@@ -31,12 +31,12 @@ public class UserDto {
 		this.id = id;
 	}
 
-	public String getName() {
-		return name;
+	public String getUsername() {
+		return username;
 	}
 
-	public void setName(String name) {
-		this.name = name;
+	public void setUsername(String username) {
+		this.username = username;
 	}
 
 	public String getDisplayName() {

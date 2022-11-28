@@ -1,31 +1,32 @@
-package com.company.twitterClone.Models.Dtos;
+package com.company.twitterClone.Models.Response;
 
 import java.util.Date;
 import java.util.List;
+
 import com.company.twitterClone.Models.Concrete.Tweet;
 
-public class TweetDto {
+public class TweetResponse {
 	private long id;
 	private String content;
 	private int likeCount;
 	private int reTweetCount;
 	private Date createdAt;
 	private Date updatedAt;
-	private UserDto user;
-	private List<TweetDto> comments;
-	private List<LikeDto> likes;
-	private List<ReTweetDto> reTweets;
+	private UserResponse user;
+	private List<TweetResponse> comments;
+	private List<LikeResponse> likes;
+	private List<ReTweetResponse> reTweets;
 
-	public TweetDto() {
+	public TweetResponse() {
 
 	}
 
-	public TweetDto(Tweet tweet) {
+	public TweetResponse(Tweet tweet) {
 		this.setId(tweet.getId());
 		this.setContent(tweet.getContent());
 		this.setCreatedAt(tweet.getCreatedAt());
 		this.setUpdatedAt(tweet.getUpdatedAt());
-		this.setUser(new UserDto(tweet.getUser()));
+		this.setUser(new UserResponse(tweet.getUser()));
 		this.setLikeCount(tweet.getLikeCount());
 		this.setReTweetCount(tweet.getReTweetCount());
 		this.setComments(comments);
@@ -82,35 +83,35 @@ public class TweetDto {
 		this.updatedAt = updatedAt;
 	}
 
-	public UserDto getUser() {
+	public UserResponse getUser() {
 		return user;
 	}
 
-	public void setUser(UserDto user) {
+	public void setUser(UserResponse user) {
 		this.user = user;
 	}
 
-	public List<TweetDto> getComments() {
+	public List<TweetResponse> getComments() {
 		return comments;
 	}
 
-	public void setComments(List<TweetDto> comments) {
+	public void setComments(List<TweetResponse> comments) {
 		this.comments = comments;
 	}
 
-	public List<LikeDto> getLikes() {
+	public List<LikeResponse> getLikes() {
 		return likes;
 	}
 
-	public void setLikes(List<LikeDto> likes) {
+	public void setLikes(List<LikeResponse> likes) {
 		this.likes = likes;
 	}
 
-	public List<ReTweetDto> getReTweets() {
+	public List<ReTweetResponse> getReTweets() {
 		return reTweets;
 	}
 
-	public void setReTweets(List<ReTweetDto> reTweets) {
+	public void setReTweets(List<ReTweetResponse> reTweets) {
 
 		this.reTweets = reTweets;
 	}
